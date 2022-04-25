@@ -1,29 +1,26 @@
 import { LitElement, html, css } from 'lit';
 import "@lrnwebcomponents/vocab-term/vocab-term.js";
 
-// @feedback this is not the vocab-term, this is the app
-// I have taken the liberty of adding in the import that visualizes
-// the term which you copied the stub code for.
-// the scope of this element is to save data in a database
-// and then query a segment of text and return the possible words that it discovered
+
 export class VocabTermApp extends LitElement {
     static get tag() {
         return 'vocab-term-app'
     }
 
     static get properties() {
-		return {
-			addEnd: { type: String },
-            getEnd: { type: String },
-            removeEnd: { type: String },
-            searchEnd: { type: String },
-			term: { type: String },
-            def: { type: String },
-            links: { type: Array },
-            renderType: { type: String },
-            words: { type: Array },
-            glossary: {},
-		}
+		    return {
+          addEnd: { type: String },
+          getEnd: { type: String },
+          removeEnd: { type: String },
+          searchEnd: { type: String },
+          term: { type: String },
+          def: { type: String },
+          links: { type: Array },
+          wordId: {},
+          renderType: { type: String },
+          words: { type: Array },
+          glossary: {},
+		   }
 	}
 
 	constructor() {
@@ -32,9 +29,10 @@ export class VocabTermApp extends LitElement {
         this.getEnd = '/api/getWords';
         this.removeEnd = '/api/removeWord';
         this.searchEnd = '/api/processWords'; 
-		this.term = '';
+		    this.term = '';
         this.def = '';
         this.links = [];
+        this.wordId = 0;
         this.renderType = 'term';
         this.words = [];
         this.glossary = [];
@@ -48,14 +46,15 @@ export class VocabTermApp extends LitElement {
         });
     }
 
-    deleteTerm(word) {
-        var queryString = `word=${word}`;
+    deleteTerm(e) {
+        const wordId = e.target.getAttribute('data-id');
+        var queryString = `wordId=${wordId}`;
         fetch(`${this.removeEnd}?${queryString}`).then(res => res.json()).then((data) => {
             console.log(data);
         });
     }
 
-    async searchTerms(input) {
+    searchTerms(input) {
         const search = input.split(" ");
         this.words = [];
 
@@ -75,7 +74,7 @@ export class VocabTermApp extends LitElement {
         console.log(this.words);
 
         this.renderType = 'list';
-        this.requestUpdate(this.renderType, 'term');            
+        this.requestUpdate(this.renderType, 'term');             
     }
 
     viewTerms() {
@@ -95,21 +94,25 @@ export class VocabTermApp extends LitElement {
         this.requestUpdate(this.renderType, 'term');
     }
 
+    processTerms() {
+
+    }
+
     renderResult() {
         if (this.renderType === 'term') {
             return html`
-                <vocab-term></vocab-term>
-                    ${this.words.map(
-                        item => html`
-                            <details>
-                            <summary>${item.term}</summary>
-                            <p slot="information">${item.def}</p>
-                            <ul class="links">
-                                <li><a href="${item.links}">${item.links}</a></li>
-                            </ul>
-                            </details>
-                        `)}
-                </vocab-term>
+                ${this.words.map(
+                    item => html`
+                    <vocab-term>
+                        <details>
+                        <summary>${item.term}</summary>
+                        <p slot="information">${item.def}</p>
+                        <ul class="links">
+                            <li><a href="${item.links}">${item.links}</a></li>
+                        </ul>
+                        </details>
+                    </vocab-term>
+                `)}
             `
         }
         else {
@@ -120,6 +123,11 @@ export class VocabTermApp extends LitElement {
                         <dt>${item.term}</dt>
                         <dd>${item.def}</dd>
                         <dd>${item.links}</dd>
+                        <script type="module">
+                            import "./src/vocab-term-app.js";
+                        </script>
+                        <button @click="${this.deleteTerm}" data-id="${item.wordId}">Delete this word</button>
+                        </br>
                     `)}
                 </dl>
             `

@@ -2,18 +2,14 @@ import { PSDB } from 'planetscale-node';
 
 export default async function handler(req, res) {
     console.log(req.query);
-    const url = '/api/getWords';
-    const words = [];
+
     const { paragraph } = req.query;
-    const wordArray = paragraph.split(" ");
+    const wordArray = paragraph.split(/([_\W])/);
 
-    await fetch(url).then(res => res.json()).then((data) => {
-        words = data.filter(el => wordArray.includes(el.Word));
-        // for(const item of data) {
-        // }
+    const conn = new PSDB('main');
+    const [dbResult] = await conn.query('SELECT * FROM VOCAB');
 
-    });
+    const filteredArray = wordArray.filter(value => dbResult.includes(value));
 
-    console.log(words);
-    res.json(JSON.stringify(words)); 
+    res.json(await filteredArray);
 }
