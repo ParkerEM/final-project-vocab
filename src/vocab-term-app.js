@@ -55,22 +55,34 @@ export class VocabTermApp extends LitElement {
     }
 
     searchTerms(input) {
-        const search = input.split(" ");
-        this.words = [];
-
-        fetch(this.getEnd).then(res => res.json()).then((data) => {
-            this.glossary = [];
+        // const search = input.split(" ");
+        // this.words = [];
+        var queryString = `paragraph=${input}`
+        fetch(`${this.searchEnd}?${queryString}`).then(res => res.json()).then((data) => {
+            this.words = [];
             for(const item of data) {
-                if(search.includes(item.Word)) {
-                    const vocab = {
-                        term: item["Word"],
-                        def: item["Definition"],
-                        links: item["Links"],
-                    };
-                    this.words.push(vocab);
-                }
+                const vocab = {
+                    term: item["Word"],
+                    def: item["Definition"],
+                    links: item["Links"],
+                };
+                this.words.push(vocab);
             }
-        });        
+        });
+
+        // fetch(this.getEnd).then(res => res.json()).then((data) => {
+        //     this.glossary = [];
+        //     for(const item of data) {
+        //         if(search.includes(item.Word)) {
+        //             const vocab = {
+        //                 term: item["Word"],
+        //                 def: item["Definition"],
+        //                 links: item["Links"],
+        //             };
+        //             this.words.push(vocab);
+        //         }
+        //     }
+        // });        
         console.log(this.words);
         this.renderType = 'list';
         this.requestUpdate(this.renderType, 'term');             
