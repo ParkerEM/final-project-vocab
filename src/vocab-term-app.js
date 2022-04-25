@@ -54,7 +54,7 @@ export class VocabTermApp extends LitElement {
         });
     }
 
-    searchTerms(input) {
+    async searchTerms(input) {
         // const search = input.split(" ");
         // this.words = [];
         var queryString = `paragraph=${input}`;
