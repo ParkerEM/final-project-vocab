@@ -9,7 +9,8 @@ export default async function handler(req, res) {
     const conn = new PSDB('main');
     const [dbResult] = await conn.query('SELECT * FROM VOCAB');
 
-    const filteredArray = wordArray.filter(value => dbResult.includes(value));
+    // const filteredArray = wordArray.filter(value => dbResult.includes(value));
+    const filteredArray = dbResult.filter(value => wordArray.includes(value.Word));
 
     res.json(await filteredArray);
 }
