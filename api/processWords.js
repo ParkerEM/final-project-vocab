@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     console.log(req.query);
 
     const { paragraph } = req.query;
-    const wordArray = paragraph.split(/([_\W])/);
+    const wordArray = paragraph.split(" ");
 
     const conn = new PSDB('main');
     const [dbResult] = await conn.query('SELECT * FROM VOCAB');
