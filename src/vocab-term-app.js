@@ -55,8 +55,6 @@ export class VocabTermApp extends LitElement {
     }
 
     async searchTerms(input) {
-        // const search = input.split(" ");
-        // this.words = [];
         var queryString = `paragraph=${input}`;
         await fetch(`${this.searchEnd}?${queryString}`).then(res => res.json()).then((data) => {
             this.words = [];
@@ -69,24 +67,10 @@ export class VocabTermApp extends LitElement {
                 this.words.push(vocab);
             }
         });
-
-        // fetch(this.getEnd).then(res => res.json()).then((data) => {
-        //     this.glossary = [];
-        //     for(const item of data) {
-        //         if(search.includes(item.Word)) {
-        //             const vocab = {
-        //                 term: item["Word"],
-        //                 def: item["Definition"],
-        //                 links: item["Links"],
-        //             };
-        //             this.words.push(vocab);
-        //         }
-        //     }
-        // });        
+      
         console.log(this.words);
         this.renderType = 'list';
-        this.requestUpdate(this.renderType, 'term');  
-        // this.requestUpdate(this.words);           
+        this.requestUpdate(this.renderType, 'term');            
     }
 
     viewTerms() {
